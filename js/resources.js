@@ -107,4 +107,29 @@
         onReady: onReady,
         isReady: isReady
     };
+    window.Layout = {
+        numRows: 6,
+        numCols: 5,
+        firstStoneRow: 1,
+        lastStoneRow: 3,
+        rowMultiplier: 83,
+        colMultiplier: 101,
+        validRow: function(row, entity) {
+            if (entity === 'enemy') {
+                return (row >= this.firstStoneRow &&
+                        row <= this.lastStoneRow)
+            } else if (entity === 'player'){
+                return (row >= 0 &&
+                        row < this.numRows)
+            } else {
+                console.warn(`Invalid entity: ${entity}`);
+                return false;
+            }
+        },
+        validCol: function(col) {
+                return (col >= 0 &&
+                        col < this.numCols)
+        }
+    }
+
 })();

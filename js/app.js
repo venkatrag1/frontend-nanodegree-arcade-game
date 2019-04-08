@@ -1,10 +1,19 @@
 // Enemies our player must avoid
-let Enemy = function() {
+
+let Enemy = function(row=-1, col=0, velocity=-1) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
+    if (row === -1 ||
+        !Layout.validRow(row, 'enemy')) {
+        this.row = Math.floor(Math.random() * (Layout.lastStoneRow + 1 - Layout.firstStoneRow)) + Layout.firstStoneRow;
+    }
+    if (!Layout.validCol(col)) {
+        this.col = col;
+    }
+    this.velocity = velocity;
     this.sprite = 'images/enemy-bug.png';
 };
 
@@ -24,12 +33,24 @@ Enemy.prototype.render = function() {
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
-let Player = function() {
-    this.sprite = 'images/char-boy.png';
-};
 
-Player.prototype.update = function() {
-};
+class Player {
+    constructor() {
+        this.sprite = 'images/char-boy.png';
+    }
+
+    update() {
+
+    }
+
+    render() {
+
+    }
+
+    handleInput(dir) {
+        console.log(dir);
+    }
+}
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
