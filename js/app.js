@@ -8,12 +8,15 @@ let Enemy = function(row=-1, col=0, velocity=-1) {
     // a helper we've provided to easily load images
     if (row === -1 ||
         !Layout.validRow(row, 'enemy')) {
-        this.row = Math.floor(Math.random() * (Layout.lastStoneRow + 1 - Layout.firstStoneRow)) + Layout.firstStoneRow;
+        row = Math.floor(Math.random() * (Layout.lastStoneRow + 1 - Layout.firstStoneRow)) + Layout.firstStoneRow;
     }
     if (!Layout.validCol(col)) {
-        this.col = col;
+        col = col;
     }
-    this.velocity = velocity;
+    this.x = col * Layout.colMultiplier;
+    this.y = row * Layout.rowMultiplier;
+
+    //this.velocity = velocity;
     this.sprite = 'images/enemy-bug.png';
 };
 
@@ -55,7 +58,7 @@ class Player {
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-let allEnemies = [];
+let allEnemies = [new Enemy(row=2), new Enemy(row=3)];
 let player = new Player();
 
 
