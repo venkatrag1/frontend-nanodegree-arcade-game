@@ -1,22 +1,23 @@
 // Enemies our player must avoid
 
-let Enemy = function(row=-1, col=0, velocity=-1) {
+let Enemy = function(row=-1, col=-1, velLev=-1) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     if (row === -1 ||
-        !Layout.validRow(row, 'enemy')) {
-        row = Math.floor(Math.random() * (Layout.lastStoneRow + 1 - Layout.firstStoneRow)) + Layout.firstStoneRow;
+        !GameBoard.validRow(row, 'enemy')) {
+        row = Math.floor(Math.random() * (GameBoard.lastStoneRow + 1 - GameBoard.firstStoneRow)) + GameBoard.firstStoneRow;
     }
-    if (!Layout.validCol(col)) {
-        col = col;
+    if (!GameBoard.validCol(col)) {
+        col = 0;
     }
-    this.x = col * Layout.colMultiplier;
-    this.y = row * Layout.rowMultiplier;
 
-    //this.velocity = velocity;
+    this.x = col * GameBoard.colMultiplier;
+    this.y = row * GameBoard.rowMultiplier - 20;
+
+    this.v = GameBoard.velLev[2];
     this.sprite = 'images/enemy-bug.png';
 };
 
@@ -26,6 +27,7 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
+    this.x += this.v * dt;
 };
 
 // Draw the enemy on the screen, required method for game

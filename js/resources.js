@@ -107,13 +107,15 @@
         onReady: onReady,
         isReady: isReady
     };
-    window.Layout = {
+    window.GameBoard = {
         numRows: 6,
         numCols: 5,
         firstStoneRow: 1,
         lastStoneRow: 3,
         rowMultiplier: 83,
         colMultiplier: 101,
+        maxX: 505,
+        velLev: [100, 200, 300],
         validRow: function(row, entity) {
             if (entity === 'enemy') {
                 return (row >= this.firstStoneRow &&
@@ -129,6 +131,9 @@
         validCol: function(col) {
                 return (col >= 0 &&
                         col < this.numCols)
+        },
+        validX: function(x) {
+            return (x >= 0 && x <= this.maxX);
         }
     }
 
