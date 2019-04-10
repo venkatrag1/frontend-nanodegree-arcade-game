@@ -1,23 +1,24 @@
 // Enemies our player must avoid
 
-let Enemy = function(row=-1, col=-1, velLev=-1) {
+let Enemy = function(row=-1, col=-1, velLevel=-1) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
-    if (row === -1 ||
-        !GameBoard.validRow(row, 'enemy')) {
+    if (!GameBoard.validRow(row, 'enemy')) {
         row = Math.floor(Math.random() * (GameBoard.lastStoneRow + 1 - GameBoard.firstStoneRow)) + GameBoard.firstStoneRow;
     }
     if (!GameBoard.validCol(col)) {
         col = 0;
     }
+    if (!GameBoard.validVelLevel(velLevel)) {
+        velLevel = Math.floor(Math.random() * GameBoard.velLevels.length);
+    }
 
     this.x = col * GameBoard.colMultiplier;
     this.y = row * GameBoard.rowMultiplier - 20;
-
-    this.v = GameBoard.velLev[2];
+    this.v = GameBoard.velLevels[velLevel];
     this.sprite = 'images/enemy-bug.png';
 };
 

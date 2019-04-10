@@ -115,7 +115,7 @@
         rowMultiplier: 83,
         colMultiplier: 101,
         maxX: 505,
-        velLev: [100, 200, 300],
+        velLevels: [100, 200, 300, 400, 500],
         validRow: function(row, entity) {
             if (entity === 'enemy') {
                 return (row >= this.firstStoneRow &&
@@ -134,6 +134,9 @@
         },
         validX: function(x) {
             return (x >= 0 && x <= this.maxX);
+        },
+        validVelLevel: function (velLevel) {
+            return (velLevel >= 0 && velLevel < this.velLevels.length)
         }
     }
 
