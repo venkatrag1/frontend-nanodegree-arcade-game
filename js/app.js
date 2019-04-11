@@ -1,6 +1,61 @@
 // Enemies our player must avoid
 
-let Enemy = function(row=-1, col=-1, velLevel=-1) {
+let GameBoard = (function () {
+    let maxX= 505, maxY = 606;
+    let numRows = 6, numCols = 5;
+    let firstStoneRow = 1,lastStoneRow= 3;
+    let rowMultiplier = 83, colMultiplier = 101;
+    let yFloor = 20;
+    let velLevels =  [100, 200, 300, 400, 500];
+
+    function Validation(lowerLimit, upperLimit) {
+        this.lowerLimit = lowerLimit;
+        this.upperLimit = upperLimit;
+        this.isValid = function (val) {
+            return (val >= this.lowerLimit &&
+                val <= this.upperLimit);
+        };
+        this.getRandomValid = function () {
+            return Math.floor(Math.random() * (this.upperLimit + 1 - this.lowerLimit)) + this.lowerLimit;
+        };
+    }
+
+    function ColConversion(colObj) {
+        return Object.assign({}, colObj, {
+            toX: function (col) {
+                return col * colMultiplier;
+            }
+        });
+    }
+
+    function RowConversion(rowObj) {
+        return Object.assign({}, rowObj, {
+            toY: function (row) {
+                return row * rowMultiplier - yFloor;
+            }
+        });
+    }
+
+    function VelConversion(velLevelObj) {
+        return Object.assign({}, velLevelObj, {
+            toVelocity: function (velLevel) {
+                return velLevels[velLevel];
+            }
+        });
+    }
+
+    return {
+        playerRow: RowConversion(new Validation(0, numRows-1)),
+        enemyRow: RowConversion(new Validation(firstStoneRow, lastStoneRow)),
+        col: ColConversion(new Validation(-1, numCols-1)),
+        velLevel: VelConversion(new Validation(0, velLevels.length - 1)),
+        x: new Validation(-101, maxX),
+        y: new Validation(0, maxY)
+    }
+
+})();
+
+let Enemy = function(row=-1, col=-1, velLevel=-1, randomizeOnReset=true) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
     // The image/sprite for our enemies, this uses
@@ -9,7 +64,7 @@ let Enemy = function(row=-1, col=-1, velLevel=-1) {
         row = GameBoard.enemyRow.getRandomValid();
     }
     if (!GameBoard.col.isValid(col)) {
-        col = GameBoard.col.getRandomValid();
+        col = GameBoard.col.lowerLimit;
     }
     if (!GameBoard.velLevel.isValid(velLevel)) {
         velLevel = GameBoard.velLevel.getRandomValid();
@@ -18,7 +73,15 @@ let Enemy = function(row=-1, col=-1, velLevel=-1) {
     this.x = GameBoard.col.toX(col);
     this.y = GameBoard.enemyRow.toY(row);
     this.v = GameBoard.velLevel.toVelocity(velLevel);
+    this.randomizeOnReset = randomizeOnReset;
     this.sprite = 'images/enemy-bug.png';
+};
+
+Enemy.prototype.reset = function() {
+    this.x = GameBoard.col.toX(GameBoard.col.lowerLimit);
+    if (this.randomizeOnReset === true) {
+        this.v = GameBoard.velLevel.toVelocity(GameBoard.velLevel.getRandomValid());
+    }
 };
 
 // Update the enemy's position, required method for game
@@ -28,8 +91,7 @@ Enemy.prototype.update = function(dt) {
     // which will ensure the game runs at the same speed for
     // all computers.
     if (!GameBoard.x.isValid(this.x)) {
-        this.x = GameBoard.x.lowerLimit;
-        this.v = GameBoard.velLevel.toVelocity(GameBoard.velLevel.getRandomValid());
+        this.reset();
     } else {
         this.x += this.v * dt;
     }
@@ -65,7 +127,12 @@ class Player {
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-let allEnemies = [new Enemy(row=2), new Enemy(row=3)];
+let allEnemies = [];
+
+for (let row = 1; row <= 3; row++) {
+    allEnemies.push(new Enemy(row=row));
+}
+
 let player = new Player();
 
 
