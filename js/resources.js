@@ -107,37 +107,60 @@
         onReady: onReady,
         isReady: isReady
     };
-    window.GameBoard = {
-        numRows: 6,
-        numCols: 5,
-        firstStoneRow: 1,
-        lastStoneRow: 3,
-        rowMultiplier: 83,
-        colMultiplier: 101,
-        maxX: 505,
-        velLevels: [100, 200, 300, 400, 500],
-        validRow: function(row, entity) {
-            if (entity === 'enemy') {
-                return (row >= this.firstStoneRow &&
-                        row <= this.lastStoneRow)
-            } else if (entity === 'player'){
-                return (row >= 0 &&
-                        row < this.numRows)
-            } else {
-                console.warn(`Invalid entity: ${entity}`);
-                return false;
-            }
-        },
-        validCol: function(col) {
-                return (col >= 0 &&
-                        col < this.numCols)
-        },
-        validX: function(x) {
-            return (x >= 0 && x <= this.maxX);
-        },
-        validVelLevel: function (velLevel) {
-            return (velLevel >= 0 && velLevel < this.velLevels.length)
+    
+    window.GameBoard = (function () {
+        let maxX= 505, maxY = 606;
+        let numRows = 6, numCols = 5;
+        let firstStoneRow = 1,lastStoneRow= 3;
+        let rowMultiplier = 83, colMultiplier = 101;
+        let yFloor = 20;
+        let velLevels =  [100, 200, 300, 400, 500];
+
+        function Validation(lowerLimit, upperLimit) {
+            this.lowerLimit = lowerLimit;
+            this.upperLimit = upperLimit;
+            this.isValid = function (val) {
+                return (val >= this.lowerLimit &&
+                    val <= this.upperLimit);
+            };
+            this.getRandomValid = function () {
+                return Math.floor(Math.random() * (this.upperLimit + 1 - this.lowerLimit)) + this.lowerLimit;
+            };
         }
-    }
+
+        function ColConversion(colObj) {
+            return Object.assign({}, colObj, {
+                toX: function (col) {
+                    return col * colMultiplier;
+                }
+            });
+        }
+
+        function RowConversion(rowObj) {
+            return Object.assign({}, rowObj, {
+                toY: function (row) {
+                    return row * rowMultiplier - yFloor;
+                }
+            });
+        }
+
+        function VelConversion(velLevelObj) {
+            return Object.assign({}, velLevelObj, {
+                toVelocity: function (velLevel) {
+                    return velLevels[velLevel];
+                }
+            });
+        }
+
+        return {
+            playerRow: RowConversion(new Validation(0, numRows-1)),
+            enemyRow: RowConversion(new Validation(firstStoneRow, lastStoneRow)),
+            col: ColConversion(new Validation(0, numCols-1)),
+            velLevel: VelConversion(new Validation(0, velLevels.length - 1)),
+            x: new Validation(0, maxX),
+            y: new Validation(0, maxY)
+        }
+        
+    })();
 
 })();

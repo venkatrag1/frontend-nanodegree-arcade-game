@@ -3,22 +3,21 @@
 let Enemy = function(row=-1, col=-1, velLevel=-1) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
-
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
-    if (!GameBoard.validRow(row, 'enemy')) {
-        row = Math.floor(Math.random() * (GameBoard.lastStoneRow + 1 - GameBoard.firstStoneRow)) + GameBoard.firstStoneRow;
+    if (!GameBoard.enemyRow.isValid(row)) {
+        row = GameBoard.enemyRow.getRandomValid();
     }
-    if (!GameBoard.validCol(col)) {
-        col = 0;
+    if (!GameBoard.col.isValid(col)) {
+        col = GameBoard.col.getRandomValid();
     }
-    if (!GameBoard.validVelLevel(velLevel)) {
-        velLevel = Math.floor(Math.random() * GameBoard.velLevels.length);
+    if (!GameBoard.velLevel.isValid(velLevel)) {
+        velLevel = GameBoard.velLevel.getRandomValid();
     }
 
-    this.x = col * GameBoard.colMultiplier;
-    this.y = row * GameBoard.rowMultiplier - 20;
-    this.v = GameBoard.velLevels[velLevel];
+    this.x = GameBoard.col.toX(col);
+    this.y = GameBoard.enemyRow.toY(row);
+    this.v = GameBoard.velLevel.toVelocity(velLevel);
     this.sprite = 'images/enemy-bug.png';
 };
 
