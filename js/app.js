@@ -4,8 +4,8 @@ class EntityManager {
     constructor(firstRow, lastRow, firstCol, lastCol) {
         this.row = this.constructor.RowMixin(this.constructor.ValidationMixin({}, firstRow, lastRow));
         this.col = this.constructor.ColMixin(this.constructor.ValidationMixin({}, firstCol, lastCol));
-        this.x = this.constructor.ValidationMixin(-101, 505);
-        this.y = this.constructor.ValidationMixin(0, 606);
+        this.x = this.constructor.ValidationMixin({}, -101, 505);
+        this.y = this.constructor.ValidationMixin({}, 0, 606);
     }
 
     static ValidationMixin(obj, lowerLimit, upperLimit) {
@@ -156,8 +156,10 @@ Enemy.prototype.update = function(dt) {
     // which will ensure the game runs at the same speed for
     // all computers.
     if (!enemyManager.x.isValid(this.x)) {
+        debugger
         this.reset();
     } else {
+        debugger
         this.x += this.v * dt;
     }
 };
