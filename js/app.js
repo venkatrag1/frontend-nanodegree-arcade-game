@@ -2,22 +2,22 @@
 
 class EntityManager {
     constructor(firstRow, lastRow, firstCol, lastCol) {
-        this.row = this.constructor.RowMixin(this.constructor.ValidationMixin({}, firstRow, lastRow));
-        this.col = this.constructor.ColMixin(this.constructor.ValidationMixin({}, firstCol, lastCol));
-        this.x = this.constructor.ValidationMixin({}, -101, 505);
-        this.y = this.constructor.ValidationMixin({}, 0, 606);
+        this.row = this.constructor.RowMixin(this.constructor.ValidationMixin({lower: firstRow, upper: lastRow}));
+        this.col = this.constructor.ColMixin(this.constructor.ValidationMixin({lower: firstCol, upper: lastCol}));
+        this.x = this.constructor.ValidationMixin({lower: -101, upper: 505});
+        this.y = this.constructor.ValidationMixin({lower:  0, upper: 606});
     }
 
-    static ValidationMixin(obj, lowerLimit, upperLimit) {
+    static ValidationMixin(obj) {
+        // TODO- if it doesn't contain the attribute lower and upper return error
+
         return Object.assign({}, obj, {
-            lowerLimit: lowerLimit,
-            upperLimit: upperLimit,
             isValid: function (val) {
-                return (val >= lowerLimit &&
-                    val <= upperLimit);
+                return (val >= obj.lower &&
+                    val <= obj.upper);
             },
             getRandomValid: function () {
-                return Math.floor(Math.random() * (upperLimit + 1 - lowerLimit)) + lowerLimit;
+                return Math.floor(Math.random() * (obj.upper + 1 - obj.lower)) + obj.lower;
             }
         });
     }
@@ -51,6 +51,8 @@ let enemyManager = (function() {
 
     function VelLevelFactory() {
         return {
+            lower: 0,
+            upper: velLevels.length - 1,
             toV: function (velLevel) {
                 return velLevels[velLevel];
             }
@@ -58,7 +60,7 @@ let enemyManager = (function() {
     }
 
     return Object.assign({}, entityManager, {
-        velLevel: EntityManager.ValidationMixin(VelLevelFactory(), 0, velLevels.length - 1)
+        velLevel: EntityManager.ValidationMixin(VelLevelFactory())
     });
 })();
 
@@ -71,7 +73,7 @@ let Enemy = function(row=-1, col=-1, velLevel=-1, randomizeOnReset=true) {
         row = enemyManager.row.getRandomValid();
     }
     if (!enemyManager.col.isValid(col)) {
-        col = enemyManager.col.lowerLimit;
+        col = enemyManager.col.lower;
     }
     if (!enemyManager.velLevel.isValid(velLevel)) {
        velLevel = enemyManager.velLevel.getRandomValid();
@@ -85,7 +87,7 @@ let Enemy = function(row=-1, col=-1, velLevel=-1, randomizeOnReset=true) {
 };
 
 Enemy.prototype.reset = function() {
-    this.x = enemyManager.col.toX(enemyManager.col.lowerLimit);
+    this.x = enemyManager.col.toX(enemyManager.col.lower);
     if (this.randomizeOnReset === true) {
         this.v = enemyManager.velLevel.toV(enemyManager.velLevel.getRandomValid());
     }
