@@ -58,65 +58,9 @@ let enemyManager = (function() {
     }
 
     return Object.assign({}, entityManager, {
-        //velLevel: this.constructor.ValidationMixin(VelLevelFactory(), 0, velLevels.length - 1)
-        velLevel: VelLevelFactory()
+        velLevel: EntityManager.ValidationMixin(VelLevelFactory(), 0, velLevels.length - 1)
     });
 })();
-//
-// let GameBoard = (function () {
-//     let maxX= 505, maxY = 606;
-//     let numRows = 6, numCols = 5;
-//     let firstStoneRow = 1,lastStoneRow= 3;
-//     let rowMultiplier = 83, colMultiplier = 101;
-//     let yFloor = 20;
-//     let velLevels =  [100, 200, 300, 400, 500];
-//
-//     function Validation(lowerLimit, upperLimit) {
-//         this.lowerLimit = lowerLimit;
-//         this.upperLimit = upperLimit;
-//         this.isValid = function (val) {
-//             return (val >= this.lowerLimit &&
-//                 val <= this.upperLimit);
-//         };
-//         this.getRandomValid = function () {
-//             return Math.floor(Math.random() * (this.upperLimit + 1 - this.lowerLimit)) + this.lowerLimit;
-//         };
-//     }
-//
-//     function ColConversion(colObj) {
-//         return Object.assign({}, colObj, {
-//             toX: function (col) {
-//                 return col * colMultiplier;
-//             }
-//         });
-//     }
-//
-//     function RowConversion(rowObj) {
-//         return Object.assign({}, rowObj, {
-//             toY: function (row) {
-//                 return row * rowMultiplier - yFloor;
-//             }
-//         });
-//     }
-//
-//     function VelConversion(velLevelObj) {
-//         return Object.assign({}, velLevelObj, {
-//             toVelocity: function (velLevel) {
-//                 return velLevels[velLevel];
-//             }
-//         });
-//     }
-//
-//     return {
-//         playerRow: RowConversion(new Validation(0, numRows-1)),
-//         enemyRow: RowConversion(new Validation(firstStoneRow, lastStoneRow)),
-//         col: ColConversion(new Validation(-1, numCols-1)),
-//         velLevel: VelConversion(new Validation(0, velLevels.length - 1)),
-//         x: new Validation(-101, maxX),
-//         y: new Validation(0, maxY)
-//     }
-//
-// })();
 
 let Enemy = function(row=-1, col=-1, velLevel=-1, randomizeOnReset=true) {
     // Variables applied to each of our instances go here,
@@ -129,10 +73,9 @@ let Enemy = function(row=-1, col=-1, velLevel=-1, randomizeOnReset=true) {
     if (!enemyManager.col.isValid(col)) {
         col = enemyManager.col.lowerLimit;
     }
-    //if (!enemyManager.velLevel.isValid(velLevel)) {
-    //    velLevel = enemyManager.velLevel.getRandomValid();
-    //}
-    velLevel = 1;
+    if (!enemyManager.velLevel.isValid(velLevel)) {
+       velLevel = enemyManager.velLevel.getRandomValid();
+    }
 
     this.x = enemyManager.col.toX(col);
     this.y = enemyManager.row.toY(row);
@@ -144,8 +87,7 @@ let Enemy = function(row=-1, col=-1, velLevel=-1, randomizeOnReset=true) {
 Enemy.prototype.reset = function() {
     this.x = enemyManager.col.toX(enemyManager.col.lowerLimit);
     if (this.randomizeOnReset === true) {
-        //this.v = enemyManager.velLevel.toV(enemyManager.velLevel.getRandomValid());
-        this.v = enemyManager.velLevel.toV(1);
+        this.v = enemyManager.velLevel.toV(enemyManager.velLevel.getRandomValid());
     }
 };
 
@@ -156,10 +98,8 @@ Enemy.prototype.update = function(dt) {
     // which will ensure the game runs at the same speed for
     // all computers.
     if (!enemyManager.x.isValid(this.x)) {
-        debugger
         this.reset();
     } else {
-        debugger
         this.x += this.v * dt;
     }
 };
