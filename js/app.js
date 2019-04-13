@@ -2,14 +2,19 @@
 
 class EntityManager {
     constructor(firstRow, lastRow, firstCol, lastCol) {
-        this.row = this.constructor.RowMixin(this.constructor.ValidationMixin({lower: firstRow, upper: lastRow}));
-        this.col = this.constructor.ColMixin(this.constructor.ValidationMixin({lower: firstCol, upper: lastCol}));
-        this.x = this.constructor.ValidationMixin({lower: -101, upper: 505});
-        this.y = this.constructor.ValidationMixin({lower:  0, upper: 606});
+        this.row = this.constructor.ValidationMixin({lower: firstRow, upper: lastRow});
+        this.col = this.constructor.ValidationMixin({lower: firstCol, upper: lastCol});
+        this.x = this.constructor.ValidationMixin(this.constructor.xFactory(firstCol, lastCol));
+        this.y = this.constructor.ValidationMixin(this.constructor.yFactory(firstRow, lastRow));
     }
 
     static ValidationMixin(obj) {
-        // TODO- if it doesn't contain the attribute lower and upper return error
+        // If it doesn't contain the attribute lower and upper return error
+        if (!obj.hasOwnProperty('lower') ||
+            !obj.hasOwnProperty('upper')) {
+            console.error('ValidationMixin works only on objects with lower and upper attributes');
+            return null;
+        }
 
         return Object.assign({}, obj, {
             isValid: function (val) {
@@ -22,23 +27,25 @@ class EntityManager {
         });
     }
 
-    static RowMixin(obj) {
-        let rowMultiplier = 83;
-        let yFloor = 20;
-        return Object.assign({}, obj, {
-            toY: function (row) {
-                return row * rowMultiplier - yFloor;
-            }
-        });
+    static xFactory(firstCol, lastCol) {
+        let xPerCol = 101;
+        let xFromCol = (col) => col * xPerCol;
+
+        return {
+            lower: xFromCol(firstCol),
+            upper: xFromCol(lastCol + 1),
+            fromCol: xFromCol
+        }
     }
 
-    static ColMixin(obj) {
-        let colMultiplier = 101;
-        return Object.assign({}, obj, {
-            toX: function (col) {
-                return col * colMultiplier;
-            }
-        });
+    static yFactory(firstRow, lastRow) {
+        let yPerRow = 83, yOffset = 20;
+        let yFromRow = (row) => row * yPerRow - yOffset;
+        return {
+            lower: yFromRow(firstRow),
+            upper: yFromRow(lastRow + 1),
+            fromRow: yFromRow
+        }
     }
 }
 
@@ -69,6 +76,7 @@ let Enemy = function(row=-1, col=-1, velLevel=-1, randomizeOnReset=true) {
     // we've provided one for you to get started
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
+    // This is the only time we should have to deal with row, col - after init deal directly with x, y
     if (!enemyManager.row.isValid(row)) {
         row = enemyManager.row.getRandomValid();
     }
@@ -79,15 +87,16 @@ let Enemy = function(row=-1, col=-1, velLevel=-1, randomizeOnReset=true) {
        velLevel = enemyManager.velLevel.getRandomValid();
     }
 
-    this.x = enemyManager.col.toX(col);
-    this.y = enemyManager.row.toY(row);
+
+    this.x = enemyManager.x.fromCol(col);
+    this.y = enemyManager.y.fromRow(row);
     this.v = enemyManager.velLevel.toV(velLevel);
     this.randomizeOnReset = randomizeOnReset;
     this.sprite = 'images/enemy-bug.png';
 };
 
 Enemy.prototype.reset = function() {
-    this.x = enemyManager.col.toX(enemyManager.col.lower);
+    this.x = enemyManager.x.lower;
     if (this.randomizeOnReset === true) {
         this.v = enemyManager.velLevel.toV(enemyManager.velLevel.getRandomValid());
     }
