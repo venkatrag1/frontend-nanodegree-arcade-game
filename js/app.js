@@ -152,7 +152,7 @@ Enemy.prototype.checkCollisions = function() {
         (player.x + playerWidth) > this.x &&
         player.y < (this.y + enemyHeight) &&
         (player.y + playerHeight) > this.y) {
-        resetGame()
+        player.reset();
     }
 };
 
