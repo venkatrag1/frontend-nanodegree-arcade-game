@@ -119,17 +119,16 @@ Enemy.prototype.update = function(dt) {
 };
 
 Enemy.prototype.checkCollisions = function() {
-    let enemyWidth = Resources.get(this.sprite).width / 2;
-    let enemyHeight = Resources.get(this.sprite).height / 2;
-    let playerWidth = Resources.get(player.sprite).width / 2;
-    let playerHeight = Resources.get(player.sprite).height / 2;
-
+    let enemyWidth = 80;
+    let enemyHeight = 10;
+    let playerWidth = 80;
+    let playerHeight = 10;
 
     if (player.x < (this.x + enemyWidth) &&
         (player.x + playerWidth) > this.x &&
         player.y < (this.y + enemyHeight) &&
         (player.y + playerHeight) > this.y) {
-        console.log("Collision");
+        resetGame()
     }
 };
 
@@ -153,10 +152,7 @@ let playerManager = (function() {
 
 class Player {
     constructor() {
-        this.col = 2;
-        this.row = 5;
-        this.x = playerManager.x.fromCol(this.col);
-        this.y = playerManager.y.fromRow(this.row);
+        this.reset();
         this.sprite = 'images/char-boy.png';
         this.height = 10;
         this.width = 10;
@@ -173,7 +169,10 @@ class Player {
 
 
     updateRow(newRow) {
-        //Check for win by upper
+        if (newRow < playerManager.row.lower) {
+            resetGame();
+            return;
+        }
         if (playerManager.row.isValid(newRow)) {
             this.row = newRow;
         }
@@ -186,7 +185,10 @@ class Player {
     }
 
     reset() {
-
+        this.col = 2;
+        this.row = 5;
+        this.x = playerManager.x.fromCol(this.col);
+        this.y = playerManager.y.fromRow(this.row);
     }
 
     handleInput(dir) {
@@ -213,11 +215,16 @@ class Player {
 let allEnemies = [];
 
 for (let row = 1; row <= 3; row++) {
-    allEnemies.push(new Enemy(row=row, col=-1, velLevel=0, randomizeOnReset=false));
+    allEnemies.push(new Enemy(row=row));
 }
 
 let player = new Player();
 
+
+function resetGame() {
+    //allEnemies.prototype.forEach( function(currentEnemy) {currentEnemy.reset()});
+    player.reset();
+}
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
