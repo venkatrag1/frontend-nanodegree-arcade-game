@@ -143,8 +143,8 @@ class Player {
     }
 
     update() {
-        this.x = playerManager.x.fromCol(this.row);
-        this.y = playerManager.y.fromRow(this.col);
+        this.x = playerManager.x.fromCol(this.col);
+        this.y = playerManager.y.fromRow(this.row);
     }
 
     render() {
