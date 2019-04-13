@@ -94,7 +94,7 @@ let Enemy = function(row=-1, col=-1, velLevel=-1, randomizeOnReset=true) {
     this.randomizeOnReset = randomizeOnReset;
     this.sprite = 'images/enemy-bug.png';
     this.height = 10;
-    this.weight = 10;
+    this.width = 10;
 };
 
 Enemy.prototype.reset = function() {
@@ -119,10 +119,16 @@ Enemy.prototype.update = function(dt) {
 };
 
 Enemy.prototype.checkCollisions = function() {
-    if (player.x < (this.x + this.width) &&
-        (player.x + player.width) > this.x &&
-        player.y < (this.y + this.height) &&
-        (player.y + player.height) > this.y) {
+    let enemyWidth = Resources.get(this.sprite).width / 2;
+    let enemyHeight = Resources.get(this.sprite).height / 2;
+    let playerWidth = Resources.get(player.sprite).width / 2;
+    let playerHeight = Resources.get(player.sprite).height / 2;
+
+
+    if (player.x < (this.x + enemyWidth) &&
+        (player.x + playerWidth) > this.x &&
+        player.y < (this.y + enemyHeight) &&
+        (player.y + playerHeight) > this.y) {
         console.log("Collision");
     }
 };
@@ -153,7 +159,7 @@ class Player {
         this.y = playerManager.y.fromRow(this.row);
         this.sprite = 'images/char-boy.png';
         this.height = 10;
-        this.weight = 10;
+        this.width = 10;
     }
 
     update() {
@@ -207,7 +213,7 @@ class Player {
 let allEnemies = [];
 
 for (let row = 1; row <= 3; row++) {
-    allEnemies.push(new Enemy(row=row));
+    allEnemies.push(new Enemy(row=row, col=-1, velLevel=0, randomizeOnReset=false));
 }
 
 let player = new Player();
