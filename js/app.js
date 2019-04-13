@@ -124,8 +124,19 @@ Enemy.prototype.render = function() {
 // This class requires an update(), render() and
 // a handleInput() method.
 
+let playerManager = (function() {
+    let firstRow = 0,lastRow= 5;
+    let firstCol = 0, lastCol = 4;
+    let entityManager = new EntityManager(firstRow, lastRow,
+                                        firstCol, lastCol);
+
+    return Object.assign({}, entityManager);
+})();
+
 class Player {
     constructor() {
+        this.x = playerManager.x.fromCol(2);
+        this.y = playerManager.y.fromRow(5);
         this.sprite = 'images/char-boy.png';
     }
 
@@ -134,7 +145,7 @@ class Player {
     }
 
     render() {
-
+        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     }
 
     handleInput(dir) {
