@@ -135,13 +135,16 @@ let playerManager = (function() {
 
 class Player {
     constructor() {
-        this.x = playerManager.x.fromCol(2);
-        this.y = playerManager.y.fromRow(5);
+        this.col = 2;
+        this.row = 5;
+        this.x = playerManager.x.fromCol(this.col);
+        this.y = playerManager.y.fromRow(this.row);
         this.sprite = 'images/char-boy.png';
     }
 
     update() {
-
+        this.x = playerManager.x.fromCol(this.row);
+        this.y = playerManager.y.fromRow(this.col);
     }
 
     render() {
@@ -149,7 +152,20 @@ class Player {
     }
 
     handleInput(dir) {
-        console.log(dir);
+        switch(dir) {
+            case 'left':
+                this.col -= 1;
+                break;
+            case 'up':
+                this.row -= 1;
+                break;
+            case 'right':
+                this.col += 1;
+                break;
+            case 'down':
+                this.row += 1;
+                break;
+        }
     }
 }
 
