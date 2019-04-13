@@ -151,19 +151,36 @@ class Player {
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     }
 
+
+    updateRow(newRow) {
+        if (playerManager.row.isValid(newRow)) {
+            this.row = newRow;
+        }
+    }
+
+    updateCol(newCol) {
+        if (playerManager.col.isValid(newCol)) {
+            this.col = newCol;
+        }
+    }
+
+    reset() {
+
+    }
+
     handleInput(dir) {
         switch(dir) {
             case 'left':
-                this.col -= 1;
+                this.updateCol(this.col - 1);
                 break;
             case 'up':
-                this.row -= 1;
+                this.updateRow(this.row - 1);
                 break;
             case 'right':
-                this.col += 1;
+                this.updateCol(this.col + 1);
                 break;
             case 'down':
-                this.row += 1;
+                this.updateRow(this.row + 1);
                 break;
         }
     }
