@@ -201,8 +201,8 @@ class Player {
 
 
     updateRow(newRow) {
-        // If you reach beyond top, game is won
-        if (newRow < playerManager.row.lower) {
+        // If you reach the top, game is won
+        if (newRow === playerManager.row.lower) {
             resetGame();
             return;
         }

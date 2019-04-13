@@ -2,19 +2,29 @@
 
 ## Table of Contents
 
-- [Instructions](#instructions)
-- [Contributing](#contributing)
+* [Running the game](#running)
+* [Playing the game](#playing)
 
-## Instructions
+## Running the game
 
-Use this [rubric](https://review.udacity.com/#!/rubrics/15/view) for self-checking your submission.
+Open index.html in your browser, from top level project directory after cloning this repository/extracting the
+tarball. 
 
-Make sure the functions you write are **object-oriented** - either class functions (like `Player` and `Enemy`) or class prototype functions such as `Enemy.prototype.checkCollisions`. Also make sure that the keyword `this` is used appropriately within your class and class prototype functions to refer to the object the function is called upon.
+## Playing the game
 
-Your **README.md** file should be updated with instructions on both how to 1. Run and 2. Play your arcade game.
+The goal of the game is to make the player cross all the way to the top to the water.
 
-For detailed instructions on how to get started, check out this [guide](https://docs.google.com/document/d/1v01aScPjSWCCWQLIpFqvg3-vXLH2e8_SZQKC8jNO0Dc/pub?embedded=true).
+The player can be moved around by using the four-arrow keys to move him left, right, top or bottom.
 
-## Contributing
+There will be enemy bugs going from left to right at varying speeds in each of the stone rows.
 
-This repository is the starter code for _all_ Udacity students. Therefore, we most likely will not accept pull requests.
+If the player collides with any of the enemies, he will get reset to the grass row at the bottom.
+
+If the player successfully reaches the water row on top, the game is won.
+
+
+
+
+
+
+
