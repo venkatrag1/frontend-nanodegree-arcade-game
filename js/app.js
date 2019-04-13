@@ -93,6 +93,8 @@ let Enemy = function(row=-1, col=-1, velLevel=-1, randomizeOnReset=true) {
     this.v = enemyManager.velLevel.toV(velLevel);
     this.randomizeOnReset = randomizeOnReset;
     this.sprite = 'images/enemy-bug.png';
+    this.height = 10;
+    this.weight = 10;
 };
 
 Enemy.prototype.reset = function() {
@@ -112,6 +114,16 @@ Enemy.prototype.update = function(dt) {
         this.reset();
     } else {
         this.x += this.v * dt;
+        this.checkCollisions();
+    }
+};
+
+Enemy.prototype.checkCollisions = function() {
+    if (player.x < (this.x + this.width) &&
+        (player.x + player.width) > this.x &&
+        player.y < (this.y + this.height) &&
+        (player.y + player.height) > this.y) {
+        console.log("Collision");
     }
 };
 
@@ -140,6 +152,8 @@ class Player {
         this.x = playerManager.x.fromCol(this.col);
         this.y = playerManager.y.fromRow(this.row);
         this.sprite = 'images/char-boy.png';
+        this.height = 10;
+        this.weight = 10;
     }
 
     update() {
@@ -153,6 +167,7 @@ class Player {
 
 
     updateRow(newRow) {
+        //Check for win by upper
         if (playerManager.row.isValid(newRow)) {
             this.row = newRow;
         }
